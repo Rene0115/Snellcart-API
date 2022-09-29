@@ -16,7 +16,7 @@ class UserController {
     if (_.isEmpty(data)) {
       return res.status(404).send({
         success: false,
-        message: 'User cannot be created without an email and a password'
+        message: 'User cannot be created without an email, mobile number and an Id'
       });
     }
     await userServices.create(data);
