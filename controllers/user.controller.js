@@ -1,6 +1,8 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable import/extensions */
 import _ from 'lodash';
+import jwt from 'jsonwebtoken';
 import userServices from '../services/user.services.js';
 import { mailGenerator, transporter } from '../config/mail.config.js';
 
@@ -28,11 +30,10 @@ class UserController {
 
     const response = {
       body: {
-        name: `${req.body.firstName} ${req.body.lastName}`,
         intro: 'Email Verification Link',
         action: {
           instructions:
-                'If you did not request for this mail, Please Ignore it. To Verify your Email password, click on the link below:',
+                'If you did not request for this mail, Please Ignore it. To Verify your Email, click on the link below:',
           button: {
             text: 'Verify Email',
             link: url
@@ -57,6 +58,35 @@ class UserController {
       success: true,
       message: `Verify email sent to ${req.body.email}`,
       body: data
+    });
+  }
+
+  async verify(req, res) {
+    const { token } = req.params;
+    console.log(token);
+    // Check we have an id
+    if (!token) {
+      return res.status(422).send({
+        message: 'Missing Token'
+      });
+    }
+    // Step 1 -  Verify the token from the URL
+    const decoded = jwt.verify(
+      token,
+      process.env.TOKEN_SECRET
+    );
+    const user = await userServices.findOne({ _id: decoded._id });
+    if (!user) {
+      return res.status(404).send({
+        message: 'User does not  exists'
+      });
+    }
+    // Step 3 - Update user verification status to true
+    user.verified = true;
+    await user.save();
+
+    return res.status(200).send({
+      message: 'Account Verified'
     });
   }
 }

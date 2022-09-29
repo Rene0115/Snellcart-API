@@ -16,7 +16,7 @@ export const transporter = nodemailer.createTransport({
 export const mailGenerator = new Mailgen({
   theme: 'default',
   product: {
-    name: 'Genesys Blog',
+    name: 'Snellcart',
     link: process.env.APP_URL
   }
 });
