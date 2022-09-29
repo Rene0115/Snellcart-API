@@ -26,7 +26,7 @@ class UserController {
 
     const verificationToken = newUser.generateToken();
 
-    const url = `${process.env.APP_URL} + ${verificationToken}`;
+    const url = `${process.env.APP_URL}${verificationToken}`;
 
     const response = {
       body: {
@@ -64,7 +64,7 @@ class UserController {
   async verify(req, res) {
     const { token } = req.params;
     console.log(token);
-    // Check we have an id
+    // Check we have a token
     if (!token) {
       return res.status(422).send({
         message: 'Missing Token'
@@ -75,7 +75,7 @@ class UserController {
       token,
       process.env.TOKEN_SECRET
     );
-    const user = await userServices.findOne({ _id: decoded._id });
+    const user = await userServices.find({ _id: decoded._id });
     if (!user) {
       return res.status(404).send({
         message: 'User does not  exists'
