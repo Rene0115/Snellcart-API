@@ -63,7 +63,6 @@ class UserController {
 
   async verify(req, res) {
     const { token } = req.params;
-    console.log(token);
     // Check we have a token
     if (!token) {
       return res.status(422).send({
