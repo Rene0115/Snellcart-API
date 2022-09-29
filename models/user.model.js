@@ -9,7 +9,7 @@ const userSchema = mongoose.Schema({
     unique: true
   },
 
-  userID: {
+  userId: {
     type: Number,
     required: true
   },
